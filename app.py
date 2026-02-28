@@ -1,6 +1,23 @@
 import streamlit as st
 import requests
 import pandas as pd
+import threading
+import uvicorn
+import time
+
+# ─── AUTO-START FASTAPI BACKEND ─────────────────────────────────────────────
+@st.cache_resource
+def start_fastapi_server():
+    """Starts the FastAPI backend in a background thread (runs only once)."""
+    thread = threading.Thread(
+        target=lambda: uvicorn.run("main:app", host="0.0.0.0", port=8000),
+        daemon=True
+    )
+    thread.start()
+    time.sleep(2)  # Give the server a moment to boot
+    return True
+
+start_fastapi_server()
 
 # ─── PAGE CONFIG ────────────────────────────────────────────────────────────
 st.set_page_config(
